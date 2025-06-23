@@ -1,6 +1,8 @@
 import classes as cl
 import os
 
+# this is just the main program where the user interacts. its all in portuguese so it might be hard to understand
+
 print("bem vindo ao gerenciador da sua biblioteca")
 
 while True:
