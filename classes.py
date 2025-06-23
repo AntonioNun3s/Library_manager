@@ -26,7 +26,7 @@ class User:
     
     def toDict(self):
         return self.__dict__
-    
+    # borrows a book
     def borrow_book(self, ID):
 
         if len(self.books_borrowed) >= 3:
@@ -42,7 +42,7 @@ class User:
                 return 1
             
         return 0
-    
+    # returns book to the library
     def return_book(self, ID):
 
         if len(self.books_borrowed) <= 0:
@@ -66,7 +66,7 @@ class Library:
         self.users = []
         self.borrowed_books = []
         self.load_data()
-    
+    # loads data automatically when opening the program and saving it
     def load_data(self):
 
         with open("library_manager/data.json", 'r') as file:
@@ -85,22 +85,22 @@ class Library:
                 
                 if book["exp_date"] != None:
                     book["exp_date"] = datetime.strptime(book["exp_date"], "%Y-%m-%d").date()
-
+                        
                 book_o = Book(book["title"], book["ID"], book["author"], book["ISBN"], book["category"], book["borrowed"], book["owner_ID"], book["exp_date"])
                 self.books.append(book_o)
 
                 if book_o.owner_ID != None:
-                    self.redirect_to_user(book_o.owner_ID, book_o)
+                    self.redirect_to_user(book_o.owner_ID, book_o) # when loading the JSON, this function inserts the book object on the User that has borrowed it before
 
                 if book_o.borrowed == True:
                     self.borrowed_books.append(book_o)
-
+        # save the data to the json
     def save_data(self):
 
         to_json = {}
         to_json["books"] = []
         to_json["users"] = []
-
+        # saves all the books
         for book in self.books:
 
             book = book.__dict__
@@ -110,7 +110,8 @@ class Library:
                 book["exp_date"] = str(book["exp_date"])
 
             to_json["books"].append(book)
-        
+
+            # checks if the user has any book borrowed and saves the user
         for idx, user in enumerate(self.users):
 
             user_a = []
@@ -137,11 +138,11 @@ class Library:
             json.dump(to_json, file, indent=4)
         
         self.load_data()
-    
+    # add a user to the library
     def add_user(self, name, ID,):
         user = User(name, ID)
         self.users.append(user)
-    
+    # remove a user by ID
     def remove_user(self, ID):
 
         for user in self.users:
@@ -153,11 +154,12 @@ class Library:
                 del user
                 return 1
         return 0
-    
+    # add a book to the library
     def add_book(self, title, ID, author, ISBN, cate):
         book = Book(title, ID, author, ISBN, cate, False, None, None)
         self.books.append(book)
-    
+            
+    # removes book by ID
     def remove_book(self, ID):
 
         for idx, book in enumerate(self.books):
@@ -167,7 +169,7 @@ class Library:
                 del self.books[idx]
                 return 1
         return 0
-    
+    # searchs user by ID
     def search_User(self, ID):
 
         for user in self.users:
@@ -181,7 +183,7 @@ class Library:
                     print()
                 return user
         return 0
-    
+    # searchs the book by ID on the JSON file
     def search_book(self, ID):
 
         for book in self.books:
@@ -199,7 +201,7 @@ class Library:
                 
                 return book
         return 0
-    
+    # prints all the users and their borrowed books
     def print_users(self):
 
         for user in self.users:
@@ -214,7 +216,7 @@ class Library:
             else:
                 print("este usuario não tem nenhum livro alugado no momento")
             print()
-    
+    # prints all the books and their owners
     def print_books(self):
 
         for book in self.books:
@@ -230,7 +232,7 @@ class Library:
             else:
                 print("este livro ainda não foi alugado")
             print()
-    
+    # prints all the borrowed books
     def print_borr_books(self):
                 
         for book in self.borrowed_books:
@@ -243,7 +245,7 @@ class Library:
             print("dono atual: " + str(book.owner_ID))
             print("data limite do aluguel: " + str(book.exp_date))
             print()
-    
+    # redirects the book loaded to the user object
     def redirect_to_user(self, ID, book):
 
         user = None
